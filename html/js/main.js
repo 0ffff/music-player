@@ -1,3 +1,3 @@
 setTimeout(function(){
-    console.log(window.list);
-},100)
+    console.log(getLrc(list.songs[1].id));
+},1000)
