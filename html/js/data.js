@@ -1,14 +1,14 @@
 var list = {};
 (function () {
     var data;
-    axios.get('/list', {
+    axios.get('/list', {//获取歌单
         params: {
             id: 60198
         }
     })
         .then(function (res) {
             console.log(res.data.result)
-            data = {
+            data = {//把json中有用的信息存储
                 name: res.data.result.name,
                 img: res.data.result.coverImgUrl,
                 songs: []
@@ -26,8 +26,8 @@ var list = {};
                     }
                 })
             };
-            list = data;
-            dom();
+            list = data;//把数据暴露成全局变量
+            dom();//获取数据完成后渲染dom
         })
         .catch(function (error) {
             console.log(error);
