@@ -6,10 +6,34 @@ var dom;
     var play = document.getElementById('play');
     var last = document.getElementById('last');
     var loop = document.getElementById('loop');
+    var loopType = 'list';
     var down = document.getElementById('down');
     var voice = document.getElementById('voice');
     var curPlayIndex = null,
         curPlayList = [];
+
+    function playListLoop(type) {
+        if (type === 'list') {
+            audio.loop = false;
+            if (curPlayIndex === curPlayList.length - 1) {
+                curPlayIndex = 0;
+            }
+            else {
+                curPlayIndex++;
+            }
+        }
+        else if (type === 'random') {
+            audio.loop = false;
+            curPlayIndex = Math.floor(Math.random() * curPlayList.length);
+        }
+        else if (type === 'loop') {
+            audio.loop = true;
+        }
+
+        audio.src = curPlayList[curPlayIndex].mp3;
+        down.href = curPlayList[curPlayIndex].mp3;
+        renderSwtichBtn(curPlayIndex);
+    }
 
     function renderSwtichBtn(index) {
         for (var i = 0; i < play_list.children.length; i++) {
@@ -41,6 +65,7 @@ var dom;
             }
         }
     }
+
 
     dom = function () {
         for (var i = 0; i < list.songs.length; i++) {
@@ -117,30 +142,73 @@ var dom;
         play.addEventListener('click', function () {
             if (audio.paused) {
                 audio.play();
-                renderSwtichBtn(curPlayIndex);
             }
             else {
                 audio.pause();
-                renderSwtichBtn(curPlayIndex);
             }
+            renderSwtichBtn(curPlayIndex);
         })
         back.addEventListener('click', function () {
+            var flag = audio.paused;
             if (curPlayIndex === 0) {
-                curPlayIndex = list.songs.length - 1;
+                curPlayIndex = curPlayList.length - 1;
             }
             else {
                 curPlayIndex--;
             }
-            audio.src = list.songs[curPlayIndex].mp3;
+            audio.src = curPlayList[curPlayIndex].mp3;
+            down.href = curPlayList[curPlayIndex].mp3;
+            if (!flag) {
+                audio.play();
+            }
+            else {
+                audio.pause();
+            }
+            renderSwtichBtn(curPlayIndex);
         })
         last.addEventListener('click', function () {
-            if (curPlayIndex === list.songs.length - 1) {
+            var flag = audio.paused;
+            if (curPlayIndex === curPlayList.length - 1) {
                 curPlayIndex = 0;
             }
             else {
                 curPlayIndex++;
             }
-            audio.src = list.songs[curPlayIndex].mp3;
+            audio.src = curPlayList[curPlayIndex].mp3;
+            down.href = curPlayList[curPlayIndex].mp3;
+            if (!flag) {
+                audio.play();
+            }
+            else {
+                audio.pause();
+            }
+            renderSwtichBtn(curPlayIndex);
+        })
+        loop.addEventListener('click', function () {
+            if (loopType === 'list') {
+                loopType = 'random';
+                loop.innerHTML = '<i class="iconfont icon-random"></i>';
+            }
+            else if (loopType === 'random') {
+                loopType = 'loop';
+                loop.innerHTML = '<i class="iconfont icon-single1"></i>';
+            }
+            else if (loopType === 'loop') {
+                loopType = 'list';
+                loop.innerHTML = '<i class="iconfont icon-single"></i>';
+            }
+        })
+        voice.addEventListener('click', function () {
+            if (audio.muted) {
+                voice.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
+            }
+            else {
+                voice.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
+            }
+            audio.muted = !audio.muted;
+        })
+        audio.addEventListener('ended', function () {
+            playListLoop(loopType);
         })
     }
 })()
