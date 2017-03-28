@@ -1,3 +1,4 @@
+var list = {};
 (function () {
     var data;
     axios.get('/list', {
@@ -6,6 +7,7 @@
         }
     })
         .then(function (res) {
+            console.log(res.data.result)
             data = {
                 name: res.data.result.name,
                 img: res.data.result.coverImgUrl,
@@ -16,6 +18,7 @@
                     id: res.data.result.tracks[i].id,
                     name: res.data.result.tracks[i].name,
                     art: res.data.result.tracks[i].artists[0].name,
+                    time: res.data.result.tracks[i].duration,
                     mp3: res.data.result.tracks[i].mp3Url,
                     album: {
                         name: res.data.result.tracks[i].album.name,
@@ -23,7 +26,8 @@
                     }
                 })
             };
-            window.list = data;
+            list = data;
+            dom();
         })
         .catch(function (error) {
             console.log(error);
@@ -37,10 +41,8 @@ function getLrc(songId) {
         }
     })
         .then(function (res) {
-            return {
-                lrc: res.data.lrc.lyric,
-                tlyric: res.data.tlyric.lyric
-            };
+            list.lrc = res.data.lrc.lyric;
+            list.tlyric = res.data.tlyric.lyric;
         })
         .catch(function (error) {
             console.log(error);
