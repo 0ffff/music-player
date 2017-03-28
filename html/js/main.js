@@ -2,9 +2,15 @@ var dom;
 (function () {
     var play_list = document.getElementById('play_list');//播放列表
     var audio = document.getElementById('audio_media');//播放器对象
+    var bg = document.getElementById('bg');//背景图片
+    var album = document.getElementById('album');//封面图片
+    var lrc = document.getElementById('lrc');//歌词
     var back = document.getElementById('back');//上一曲按键
     var play = document.getElementById('play');//开始/暂停按键
     var last = document.getElementById('last');//下一曲按键
+    var info = document.getElementById('player_music_info');//当前播放的歌曲信息
+    var time = document.getElementById('player_music_time');//当前播放的歌曲时长
+    var progress = document.getElementById('player_progress').firstElementChild;//歌曲进度条
     var loop = document.getElementById('loop');//循环类型按键
     var loopType = 'list';//循环类型标志
     var down = document.getElementById('down');//当前下载按钮
@@ -35,6 +41,11 @@ var dom;
         }
     }
 
+    function fix(num, length) {//格式化数字位数
+        return ('' + num).length < length ? ((new Array(length + 1)).join('0') + num).slice(-length) : '' + num;
+    }
+
+
     function playListIndex(id) {//根据歌曲ID返回歌曲在播放列表中的序号
         for (var i = 0; i < curPlayList.length; i++) {
             if (curPlayList[i].id == id) {
@@ -43,13 +54,34 @@ var dom;
         }
     }
 
+    function curPlayer() {//渲染当前播放器播放状态（包括歌曲信息、歌曲长度、下载按钮地址等）
+        album.innerHTML = '<img src="' + curPlayList[curPlayIndex].album.img + '" alt="' + curPlayList[curPlayIndex].album.name + '">';
+        getLrc(curPlayList[curPlayIndex].id, function (res) {
+            lrc.innerHTML = res.data.lrc.lyric;
+        });
+        info.innerHTML = curPlayList[curPlayIndex].name + '-' + curPlayList[curPlayIndex].art;
+        audio.src = curPlayList[curPlayIndex].mp3;
+        down.href = curPlayList[curPlayIndex].mp3;
+        bg.style.backgroundImage = 'url("' + curPlayList[curPlayIndex].album.img + '")'
+    }
+
+    var timer = setInterval(function () {
+        if (audio.duration) {
+            time.innerHTML = fix(Math.round(audio.currentTime / 60), 2) + ':' + fix(Math.round(audio.currentTime % 60), 2) + '/' + fix(Math.round(audio.duration / 60), 2) + ':' + fix(Math.round(audio.duration % 60), 2);
+            progress.max = audio.duration;
+            progress.value = audio.currentTime;
+        }
+        else {
+            time.innerHTML = '00:00';
+        }
+    }, 500)
 
     dom = function () {//根据歌单渲染dom
         for (var i = 0; i < list.songs.length; i++) {
             curPlayList.push(list.songs[i]);
             var item = document.createElement('li');
             item.innerHTML =
-                '<input type="checkbox" class="songlist_checkbox">' +
+                // '<input type="checkbox" class="songlist_checkbox">' +
                 // '<div class="songlist_number">' + (i + 1) + '</div>' +
                 '<div class="songlist_songname" title=" ' + curPlayList[i].name + ' "> ' + curPlayList[i].name + ' </div>' +
                 '<div class="mod_list_menu">' +
@@ -59,9 +91,9 @@ var dom;
                 '<i class="iconfont icon-download"></i></a>' +
                 '</div>' +
                 '<div class="songlist_artist">' +
-                '<a href="#" class="singer_name"> ' + curPlayList[i].art + ' </a>' +
+                '<a href="#" id="singer_name"> ' + curPlayList[i].art + ' </a>' +
                 '</div>' +
-                '<div class="songlist_time"> ' + Math.floor(curPlayList[i].time / 60000) + ':' + Math.floor(curPlayList[i].time / 1000 % 60) + ' </div>' +
+                '<div class="songlist_time"> ' + fix(Math.round(curPlayList[i].time / 60000), 2) + ':' + fix(Math.round(curPlayList[i].time / 1000 % 60), 2) + ' </div>' +
                 '<a href="javascript:;" class="songlist_delete" title="删除">' +
                 '<i class="iconfont icon-del"></i>' +
                 '</a>';
@@ -77,7 +109,7 @@ var dom;
                                 }
                                 else {
                                     curPlayIndex = playListIndex(list.songs[i].id);
-                                    audio.src = list.songs[curPlayIndex].mp3;
+                                    curPlayer();
                                     audio.play();
                                     renderSwtichBtn(curPlayIndex);
                                 }
@@ -85,8 +117,7 @@ var dom;
                             else {
                                 if (curPlayIndex !== playListIndex(list.songs[i].id)) {
                                     curPlayIndex = playListIndex(list.songs[i].id);
-                                    audio.src = list.songs[i].mp3;
-                                    down.href = list.songs[i].mp3;
+                                    curPlayer();
                                 }
                                 audio.play();
                                 renderSwtichBtn(curPlayIndex);
@@ -117,6 +148,10 @@ var dom;
 
     window.onload = function () {//为功能按钮绑定事件
         play.addEventListener('click', function () {//开始/暂停
+            if (!audio.src) {
+                curPlayIndex = 0;
+                curPlayer();
+            }
             if (audio.paused) {
                 audio.play();
             }
@@ -133,8 +168,7 @@ var dom;
             else {
                 curPlayIndex--;
             }
-            audio.src = curPlayList[curPlayIndex].mp3;
-            down.href = curPlayList[curPlayIndex].mp3;
+            curPlayer();
             if (!flag) {
                 audio.play();
             }
@@ -151,8 +185,7 @@ var dom;
             else {
                 curPlayIndex++;
             }
-            audio.src = curPlayList[curPlayIndex].mp3;
-            down.href = curPlayList[curPlayIndex].mp3;
+            curPlayer();
             if (!flag) {
                 audio.play();
             }
@@ -201,10 +234,11 @@ var dom;
             else if (loopType === 'loop') {
                 audio.loop = true;
             }
-
-            audio.src = curPlayList[curPlayIndex].mp3;
-            down.href = curPlayList[curPlayIndex].mp3;
+            curPlayer();
             renderSwtichBtn(curPlayIndex);
+        })
+        progress.addEventListener('change', function () {
+            audio.currentTime = progress.value;
         })
     }
 })()

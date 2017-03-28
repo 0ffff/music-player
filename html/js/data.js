@@ -34,16 +34,13 @@ var list = {};
         });
 }())
 //获取歌词
-function getLrc(songId) {
+function getLrc(songId, fn) {
     axios.get('/lrc', {
         params: {
             id: songId
         }
     })
-        .then(function (res) {
-            list.lrc = res.data.lrc.lyric;
-            list.tlyric = res.data.tlyric.lyric;
-        })
+        .then(fn)
         .catch(function (error) {
             console.log(error);
         });
