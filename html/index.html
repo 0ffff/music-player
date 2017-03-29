@@ -29,14 +29,17 @@
             <a href="javascript:;" id="back" ><i class="iconfont icon-prev"></i></a>
             <a href="javascript:;" id="play" ><i class="iconfont icon-playerplay"></i></a>
             <a href="javascript:;" id="last" ><i class="iconfont icon-next"></i></a>
-            <div>
-                <div id="player_music_info">歌名/歌手</div>
+            <div class="player_mid">
+                <div id="player_music_info">歌名 - 歌手</div>
                 <div id="player_music_time"></div>
-                <div id="player_progress"><input type="range"></div>
+                <div id="player_progress"><input type="range" value=0></div>
             </div>
             <a href="javascript:;" id="loop" ><i class="iconfont icon-single"></i></a>
             <a href="javascript:;" id="down" title="下载" download="music"><i class="iconfont icon-download"></i></a>
-            <a href="javascript:;" id="voice" ><i class="iconfont icon-playervolumeup"></i></a>
+            <div class="voice">
+                <a href="javascript:;" id="mute" ><i class="iconfont icon-playervolumeup"></i></a>
+                <input id="volume_progress" type="range" min=0 max=100 value=100>
+            </div>
         </div>
     </div>
     <div id="bg_mark"></div>

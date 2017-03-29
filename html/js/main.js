@@ -14,7 +14,8 @@ var dom;
     var loop = document.getElementById('loop');//循环类型按键
     var loopType = 'list';//循环类型标志
     var down = document.getElementById('down');//当前下载按钮
-    var voice = document.getElementById('voice');//音量按钮
+    var mute = document.getElementById('mute');//静音按钮
+    var volume = document.getElementById('volume_progress');//音量调节
     var curPlayIndex = null,//当前正在播放歌曲的序号
         curPlayList = [];//当前播放列表
 
@@ -59,10 +60,10 @@ var dom;
         getLrc(curPlayList[curPlayIndex].id, function (res) {
             lrc.innerHTML = res.data.lrc.lyric;
         });
-        info.innerHTML = curPlayList[curPlayIndex].name + '-' + curPlayList[curPlayIndex].art;
+        info.innerHTML = curPlayList[curPlayIndex].name + ' - ' + curPlayList[curPlayIndex].art;
         audio.src = curPlayList[curPlayIndex].mp3;
         down.href = curPlayList[curPlayIndex].mp3;
-        bg.style.backgroundImage = 'url("' + curPlayList[curPlayIndex].album.img + '")'
+        bg.style.backgroundImage = 'url("' + curPlayList[curPlayIndex].album.img + '")';
     }
 
     var timer = setInterval(function () {
@@ -179,11 +180,18 @@ var dom;
         })
         last.addEventListener('click', function () {//下一曲
             var flag = audio.paused;
-            if (curPlayIndex === curPlayList.length - 1) {
-                curPlayIndex = 0;
+            if (loopType === 'list' || loopType === 'loop') {//根据循环类型标志确定循环方式
+                audio.loop = false;
+                if (curPlayIndex === curPlayList.length - 1) {
+                    curPlayIndex = 0;
+                }
+                else {
+                    curPlayIndex++;
+                }
             }
-            else {
-                curPlayIndex++;
+            else if (loopType === 'random') {
+                audio.loop = false;
+                curPlayIndex = Math.floor(Math.random() * curPlayList.length);
             }
             curPlayer();
             if (!flag) {
@@ -208,12 +216,12 @@ var dom;
                 loop.innerHTML = '<i class="iconfont icon-single"></i>';
             }
         })
-        voice.addEventListener('click', function () {//静音
+        mute.addEventListener('click', function () {//静音
             if (audio.muted) {
-                voice.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
+                mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
             }
             else {
-                voice.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
+                mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
             }
             audio.muted = !audio.muted;
         })
@@ -237,8 +245,11 @@ var dom;
             curPlayer();
             renderSwtichBtn(curPlayIndex);
         })
-        progress.addEventListener('change', function () {
+        progress.addEventListener('change', function () {//拖动歌曲进度条
             audio.currentTime = progress.value;
+        })
+        volume.addEventListener('change', function () {//拖动音量进度条
+            audio.volume = volume.value / 100;
         })
     }
 })()
