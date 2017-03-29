@@ -4,7 +4,7 @@ var dom;
     var audio = document.getElementById('audio_media');//播放器对象
     var bg = document.getElementById('bg');//背景图片
     var album = document.getElementById('album');//封面图片
-    var lrc = document.getElementById('lrc');//歌词
+    var lrcBox = document.getElementById('lrc_box');//歌词框
     var back = document.getElementById('back');//上一曲按键
     var play = document.getElementById('play');//开始/暂停按键
     var last = document.getElementById('last');//下一曲按键
@@ -58,7 +58,7 @@ var dom;
     function curPlayer() {//渲染当前播放器播放状态（包括歌曲信息、歌曲长度、下载按钮地址等）
         album.innerHTML = '<img src="' + curPlayList[curPlayIndex].album.img + '" alt="' + curPlayList[curPlayIndex].album.name + '">';
         getLrc(curPlayList[curPlayIndex].id, function (res) {
-            lrc.innerHTML = res.data.lrc.lyric;
+            lrcScroll(res.data.lrc.lyric);
         });
         info.innerHTML = curPlayList[curPlayIndex].name + ' - ' + curPlayList[curPlayIndex].art;
         audio.src = curPlayList[curPlayIndex].mp3;
@@ -246,10 +246,13 @@ var dom;
         mute.addEventListener('click', function () {//静音
             if (audio.muted) {
                 mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
+                volume.value = 100;
             }
             else {
                 mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
+                volume.value = 0;
             }
+            audio.volume = volume.value / 100
             audio.muted = !audio.muted;
         })
         audio.addEventListener('ended', function () {//切换下一曲的方式

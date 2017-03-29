@@ -1,4 +1,5 @@
-var list = {};
+var list = {},
+    getLrc;
 (function () {
     var data;
     axios.get('/list', {//获取歌单
@@ -32,17 +33,18 @@ var list = {};
         .catch(function (error) {
             console.log(error);
         });
-}())
-//获取歌词
-function getLrc(songId, fn) {
-    axios.get('/lrc', {
-        params: {
-            id: songId
-        }
-    })
-        .then(fn)
-        .catch(function (error) {
-            console.log(error);
-        });
 
-}
+    //获取歌词
+    getLrc = function (songId, fn) {
+        axios.get('/lrc', {
+            params: {
+                id: songId
+            }
+        })
+            .then(fn)
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+}())

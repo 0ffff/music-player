@@ -173,11 +173,15 @@ header h1{
     height: 80%;
 }
 
-#lrc {
+#lrc_box {
     width: 80%;
     height: 60%;
     text-align: center;
     overflow-y: hidden;
+}
+
+.lrc_on {
+    color: #FF9800;
 }
 
 .player {
