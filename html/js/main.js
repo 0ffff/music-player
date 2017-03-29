@@ -102,7 +102,34 @@ var dom;
             for (var j = 0; j < play_list.children[i].children.length; j++) {
                 if (play_list.children[i].children[j].className.indexOf('mod_list_menu') !== -1) {
                     play_list.children[i].children[j].children[0].addEventListener('click', function (i, j) {//给歌单中的每一首歌上的按钮绑定事件
-                        return function () {//绑定开始/暂停事件
+                        return function () {//按钮绑定开始/暂停事件
+                            if (!audio.paused) {
+                                if (curPlayIndex === playListIndex(list.songs[i].id)) {
+                                    audio.pause();
+                                    renderSwtichBtn(curPlayIndex);
+                                }
+                                else {
+                                    curPlayIndex = playListIndex(list.songs[i].id);
+                                    curPlayer();
+                                    audio.play();
+                                    renderSwtichBtn(curPlayIndex);
+                                }
+                            }
+                            else {
+                                if (curPlayIndex !== playListIndex(list.songs[i].id)) {
+                                    curPlayIndex = playListIndex(list.songs[i].id);
+                                    curPlayer();
+                                }
+                                audio.play();
+                                renderSwtichBtn(curPlayIndex);
+                            }
+
+                        }
+                    }(i, j))
+                }
+                if (play_list.children[i].children[j].className.indexOf('songlist_songname') !== -1) {
+                    play_list.children[i].children[j].addEventListener('dblclick', function (i, j) {//给歌单中的每一首歌上的歌曲名字绑定事件
+                        return function () {//歌名绑定双击开始/暂停事件
                             if (!audio.paused) {
                                 if (curPlayIndex === playListIndex(list.songs[i].id)) {
                                     audio.pause();
@@ -249,6 +276,14 @@ var dom;
             audio.currentTime = progress.value;
         })
         volume.addEventListener('change', function () {//拖动音量进度条
+            if (volume.value == 0) {//如果音量为0则切换静音标志
+                audio.muted = true;
+                mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
+            }
+            else {
+                audio.muted = false;
+                mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
+            }
             audio.volume = volume.value / 100;
         })
     }
