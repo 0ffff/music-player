@@ -239,7 +239,7 @@ header h1 {
 }
 
 #album img {
-    height: 80%;
+    height: 90%;
 }
 
 #cur_info {
@@ -247,11 +247,19 @@ header h1 {
     text-align: center
 }
 
+#cur_info p {
+    margin: 8px 0;
+}
+
 #lrc_box {
     width: 80%;
     height: 48%;
     text-align: center;
     overflow-y: hidden;
+}
+
+#lrc_box li {
+    margin: 0.8em 0;
 }
 
 .lrc_on {
