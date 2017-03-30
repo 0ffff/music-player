@@ -137,6 +137,18 @@ header h1 {
     overflow-y: hidden
 }
 
+.cur_play, .cur_play #singer_name{
+    color: #FF9800;
+}
+
+.cur_play .songlist_songname::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: url('/image/wave2.gif') 0 0 no-repeat;
+}
+
 #play_list li {
     position: relative;
     height: 3em;

@@ -22,16 +22,21 @@
         curPlayList = [];//当前播放列表
 
     function init() {//初始化
-        getList(60198, function (data) {//获取初始数据
-            curPlayList = data.songs;//把数据存入播放列表
+        if (localStorage.data && localStorage.data !== '[]') {
+            curPlayList = JSON.parse(localStorage.data);
             for (var i = 0; i < curPlayList.length; i++) {//播放列表渲染DOM
                 playList.appendChild(randerDOM(curPlayList[i]));
             }
-
-        });
-
+        }
+        else {
+            getList(60198, function (data) {//获取初始数据
+                curPlayList = data.songs;//把数据存入播放列表
+                for (var i = 0; i < curPlayList.length; i++) {//播放列表渲染DOM
+                    playList.appendChild(randerDOM(curPlayList[i]));
+                }
+            });
+        }
     }
-
 
     function renderSwtichBtn(index) {//渲染所有开始/暂停按键的状态
         for (var i = 0; i < play_list.children.length; i++) {
@@ -84,13 +89,19 @@
     }
 
     var timer = setInterval(function () {
-        if (audio.duration) {
+        if (audio.duration) {//更新播放时间
             time.innerHTML = fix(Math.round(audio.currentTime / 60), 2) + ':' + fix(Math.round(audio.currentTime % 60), 2) + '/' + fix(Math.round(audio.duration / 60), 2) + ':' + fix(Math.round(audio.duration % 60), 2);
             progress.max = audio.duration;
             progress.value = audio.currentTime;
         }
         else {
             time.innerHTML = '00:00';
+        }
+        for (var i = 0; i < playList.children.length; i++) {
+                playList.children[i].className = '';
+            }
+        if (!audio.paused) {//显示正在播放状态的样式
+            playList.children[curPlayIndex].className = 'cur_play';
         }
     }, 500)
 
@@ -190,6 +201,7 @@
                             curPlayList.splice(playListIndex(id), 1);
                         }
                         playList.removeChild(node);
+                        localStorage.data = JSON.stringify(curPlayList);
                     }
                 }(song.id, removed))
             }
@@ -315,24 +327,50 @@
             }
             audio.volume = volume.value / 100;
         })
-        searchBox.addEventListener('change', function () {
-            search(searchBox.value, 1, function (res) {
+        searchBox.addEventListener('keyup', function () {//搜索
+            searchList.innerHTML = '';
+            search(searchBox.value, 1, function (data) {
                 var ul = document.createElement('ul');
-                for (var i = 0; i < res.data.result.songs.length; i++) {//把搜索结果插入DOM
+                for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
                     var item = document.createElement('li');
-                    item.innerHTML = res.data.result.songs[i].name + ' - ' + res.data.result.songs[i].artists[0].name;
+                    item.innerHTML = data[i].name + ' - ' + data[i].art;
                     item.addEventListener('click', function (data) {//点击插入播放列表
                         return function () {
                             curPlayList.push(data);
                             playList.appendChild(randerDOM(data));
+                            localStorage.data = JSON.stringify(curPlayList);
                             searchList.innerHTML = '';
                             searchBox.value = '';
                         }
-                    }(res.data.result.songs[i]))
+                    }(data[i]))
                     ul.appendChild(item);
                 }
                 searchList.appendChild(ul);
             })
         })
+        searchBox.addEventListener('focus', function () {//搜索
+            searchList.innerHTML = '';
+            search(searchBox.value, 1, function (data) {
+                var ul = document.createElement('ul');
+                for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
+                    var item = document.createElement('li');
+                    item.innerHTML = data[i].name + ' - ' + data[i].art;
+                    item.addEventListener('click', function (data) {//点击插入播放列表
+                        return function () {
+                            curPlayList.push(data);
+                            playList.appendChild(randerDOM(data));
+                            localStorage.data = JSON.stringify(curPlayList);
+                            searchList.innerHTML = '';
+                            searchBox.value = '';
+                        }
+                    }(data[i]))
+                    ul.appendChild(item);
+                }
+                searchList.appendChild(ul);
+            })
+        })
+        // searchBox.addEventListener('blur', function () {
+        //     searchList.innerHTML = '';
+        // })
     }
 })()

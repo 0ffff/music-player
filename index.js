@@ -5,31 +5,30 @@ var app = express();
 app.use(express.static('html'));
 
 app.get('/list', function (req, res) {
-    download('/api/playlist/detail?id=' + req.query.id, 'list', 'GET');
-    JSON.stringify(global.list)
-    res.send(global.list);
+    download('/api/playlist/detail?id=' + req.query.id, 'GET', function(data){
+        res.send(JSON.stringify(data));
+    });
 })
 
 app.get('/lrc', function (req, res) {
-    download('/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id=' + req.query.id, 'lrc', 'GET');
-    JSON.stringify(global.lrc)
-    res.send(global.lrc);
+    download('/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id=' + req.query.id, 'GET', function(data){
+        res.send(JSON.stringify(data));
+    });
 })
 
 app.get('/search', function (req, res) {
-    console.log(req.query.s)
     let s = encodeURI(req.query.s);
     s = s.replace(/ /g,"%20");
-    download('/api/search/pc?s=' + s + '&offset=0&limit=10&type=' + req.query.type, 'search', 'POST');
-    JSON.stringify(global.search)
-    res.send(global.search);
+    download('/api/search/pc?s=' + s + '&offset=0&limit=10&type=' + req.query.type, 'POST', function(data){
+        res.send(JSON.stringify(data));
+    });
 })
 
 var server = app.listen(3000);
 console.log('Listening on port 3000...');
 
 //加载第三方页面
-function download(url, type, method) {
+function download(url, method, callBack) {
     var opt = {
         host: 'music.163.com',
         port: '80',
@@ -57,15 +56,7 @@ function download(url, type, method) {
         res.on('end', () => {
             try {
                 let parsedData = JSON.parse(rawData);
-                if (type === 'list') {
-                    global.list = parsedData;
-                }
-                else if (type === 'lrc') {
-                    global.lrc = parsedData;
-                }
-                else if (type === 'search') {
-                    global.search = parsedData;
-                }
+                callBack(parsedData);
 
             } catch (e) {
                 console.log(e.message);

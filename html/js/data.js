@@ -4,15 +4,13 @@ var getList,
 (function () {
     //获取歌单
     getList = function (ListId, callBack) {
-        var data;
         axios.get('/list', {//获取歌单
             params: {
                 id: ListId
             }
         })
             .then(function (res) {
-                console.log(res.data.result)
-                data = {//把json中有用的信息存储
+                var data = {//把json中有用的信息存储
                     name: res.data.result.name,
                     img: res.data.result.coverImgUrl,
                     songs: []
@@ -60,7 +58,24 @@ var getList,
                 type: type
             }
         })
-            .then(callBack)
+            .then(function (res) {
+                var data = [];//把json中有用的信息存储
+                for (var i = 0; i < res.data.result.songs.length; i++) {
+                    data.push({
+                        id: res.data.result.songs[i].id,
+                        name: res.data.result.songs[i].name,
+                        art: res.data.result.songs[i].artists[0].name,
+                        time: res.data.result.songs[i].duration,
+                        mp3: res.data.result.songs[i].mp3Url,
+                        album: {
+                            id: res.data.result.songs[i].album.id,
+                            name: res.data.result.songs[i].album.name,
+                            img: res.data.result.songs[i].album.picUrl
+                        }
+                    })
+                };
+                callBack(data);
+            })
             .catch(function (error) {
                 console.log(error);
             });
