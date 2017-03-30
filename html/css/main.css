@@ -135,11 +135,11 @@ header h1 {
 }
 
 .list>ul li:nth-child(1) {
-    width: 50%;
+    width: 48%;
 }
 
 .list>ul li:nth-child(2) {
-    width: 29%;
+    width: 30%;
 }
 
 .list>ul li:nth-child(3) {
@@ -150,11 +150,31 @@ header h1 {
     position: absolute;
     top: 3em;
     left: 0;
-    width: 75%;
+    width: 68%;
     height: 80%;
     z-index: 3;
     font-size: 16px;
-    overflow-y: hidden
+    overflow-y: scroll
+}
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+#play_list::-webkit-scrollbar{
+    width: 10px;
+    height: 16px;
+    background-color: rgba(41, 41, 41, 0)
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+#play_list::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    border-radius: 10px;
+    background-color: rgb(201, 201, 201)
+}
+/*定义滑块，内阴影及圆角*/
+#play_list::-webkit-scrollbar-thumb{
+    /*width: 10px;*/
+    height: 20px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
 }
 
 .cur_play, .cur_play #singer_name{
@@ -176,17 +196,17 @@ header h1 {
 }
 
 .songlist_songname {
-    width: 50%;
+    width: 53%;
     cursor: default;
     user-select: none;
 }
 
 .songlist_artist {
-    width: 30%;
+    width: 35%;
 }
 
 .songlist_time {
-    width: 20%;
+    width: 10%;
 }
 
 #play_list div {
