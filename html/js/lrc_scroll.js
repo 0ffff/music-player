@@ -13,6 +13,7 @@ var lrcScroll;
             var timeRegExpArr = lrcArray[m].match(/\[\d*:\d*((\.|\:)\d*)*\]/g);
             if (timeRegExpArr) {
                 for (var k = 0; k < timeRegExpArr.length; k++) {
+                    timeRegExpArr[k] = timeRegExpArr[k].replace(/\:/g, '.');
                     var time = Number(timeRegExpArr[k].slice(1, 3)) * 60 + Number(timeRegExpArr[k].slice(4, 9));
                     dataObj[time] = clause;
                 }
