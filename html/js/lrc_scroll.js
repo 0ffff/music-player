@@ -39,7 +39,7 @@ var lrcScroll;
         lrcBox.appendChild(ul);
         //歌词滚动
         ul.style.transition = 'transform 0.2s ease-out';
-        ul.style.transform = 'translate3d(0px, ' + lrcBox.offsetHeight * 1 / 5 + 'px, 0px)';
+        ul.style.transform = 'translate3d(0px, ' + lrcBox.offsetHeight * 2 / 5 + 'px, 0px)';
         var lrc_timer = setInterval(function () {
             for (var i = 0; i < timeArray.length; i++) {
                 if (Math.abs(audio.currentTime - timeArray[i]) < 0.1) {
@@ -51,7 +51,7 @@ var lrcScroll;
                         ul.children[o].className = '';
                     }
                     ul.children[i].className = 'lrc_on';
-                    ul.style.transform = 'translate3d(0px, -' + (sumOffsetHight - lrcBox.offsetHeight * 1 / 6) + 'px, 0px)';
+                    ul.style.transform = 'translate3d(0px, -' + (sumOffsetHight - lrcBox.offsetHeight * 2 / 5) + 'px, 0px)';
                 }
             }
         }, 50)

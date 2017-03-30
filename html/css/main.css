@@ -252,14 +252,20 @@ header h1 {
 }
 
 #lrc_box {
+    margin-top: 6%;
     width: 80%;
     height: 48%;
     text-align: center;
     overflow-y: hidden;
 }
 
+#lrc_box ul {
+    margin-left: 25%;
+    list-style: none;
+}
+
 #lrc_box li {
-    margin: 0.8em 0;
+    padding: 0.4em 0;
 }
 
 .lrc_on {
