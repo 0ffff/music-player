@@ -98,8 +98,8 @@
             time.innerHTML = '00:00';
         }
         for (var i = 0; i < playList.children.length; i++) {
-                playList.children[i].className = '';
-            }
+            playList.children[i].className = '';
+        }
         if (!audio.paused) {//显示正在播放状态的样式
             playList.children[curPlayIndex].className = 'cur_play';
         }
@@ -369,10 +369,23 @@
                 searchList.appendChild(ul);
             })
         })
-        searchBox.addEventListener('blur', function () {//输入框失焦隐藏搜索结果
-            setTimeout(function(){//使用延迟器将失焦事件排在后面触发
+        document.addEventListener('click', function (e) {//输入框失焦隐藏搜索结果
+            if (searchList.innerHTML) {
+                e = e || window.event; //for IE8,7 compatibility
+                var t = e.target || e.srcElement; // clicked element
+                var sig = false;
+                // now check all parents
+                while (t) {
+                    if (t === searchBox || t === searchList) {
+                        sig = true;
+                    }
+                    t = t.parentNode;
+                }
+                if (sig) {
+                    return;
+                }
                 searchList.innerHTML = '';
-            },100)
+            }
         })
     }
 })()
