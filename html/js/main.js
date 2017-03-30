@@ -369,8 +369,10 @@
                 searchList.appendChild(ul);
             })
         })
-        // searchBox.addEventListener('blur', function () {
-        //     searchList.innerHTML = '';
-        // })
+        searchBox.addEventListener('blur', function () {//输入框失焦隐藏搜索结果
+            setTimeout(function(){//使用延迟器将失焦事件排在后面触发
+                searchList.innerHTML = '';
+            },100)
+        })
     }
 })()
