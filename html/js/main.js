@@ -16,7 +16,7 @@
     var down = document.getElementById('down');//当前下载按钮
     var mute = document.getElementById('mute');//静音按钮
     var volume = document.getElementById('volume_progress');//音量调节
-    var searchBox = document.getElementById('search_box').firstElementChild;//搜索框
+    var searchBox = document.getElementById('search_box').firstElementChild;//搜索栏
     var searchList = document.getElementById('search_list');//搜索结果列表
     var curPlayIndex = null,//当前正在播放歌曲的序号
         curPlayList = [];//当前播放列表
@@ -329,6 +329,7 @@
         })
         searchBox.addEventListener('keyup', function () {//搜索
             searchList.innerHTML = '';
+            searchList.style.display = 'none';
             search(searchBox.value, 1, function (data) {
                 var ul = document.createElement('ul');
                 for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
@@ -340,16 +341,20 @@
                             playList.appendChild(randerDOM(data));
                             localStorage.data = JSON.stringify(curPlayList);
                             searchList.innerHTML = '';
+                            searchList.style.display = 'none';
                             searchBox.value = '';
                         }
                     }(data[i]))
+                    searchList.innerHTML = '';
+                    searchList.style.display = 'none';
                     ul.appendChild(item);
+                    searchList.style.display = 'block';
                 }
                 searchList.appendChild(ul);
             })
         })
         searchBox.addEventListener('focus', function () {//搜索
-            searchList.innerHTML = '';
+            searchBox.parentElement.style.borderColor = '#ff9800';
             search(searchBox.value, 1, function (data) {
                 var ul = document.createElement('ul');
                 for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
@@ -361,13 +366,20 @@
                             playList.appendChild(randerDOM(data));
                             localStorage.data = JSON.stringify(curPlayList);
                             searchList.innerHTML = '';
+                            searchList.style.display = 'none';
                             searchBox.value = '';
                         }
                     }(data[i]))
+                    searchList.innerHTML = '';
+                    searchList.style.display = 'none';
                     ul.appendChild(item);
+                    searchList.style.display = 'block';
                 }
                 searchList.appendChild(ul);
             })
+        })
+        searchBox.addEventListener('blur', function () {//搜索框失焦边框颜色复位
+            searchBox.parentElement.style.borderColor = 'rgba(225, 225, 225, 0.8)';
         })
         document.addEventListener('click', function (e) {//输入框失焦隐藏搜索结果
             if (searchList.innerHTML) {
@@ -385,6 +397,7 @@
                     return;
                 }
                 searchList.innerHTML = '';
+                searchList.style.display = 'none';
             }
         })
     }

@@ -50,25 +50,43 @@ header h1 {
     padding: 20px;
 }
 
-#search_box {
+.search {
     position: absolute;
-    top: 45%;
+    top: 30%;
     right: 5%;
-    width: 15%;
-    z-index: 3
+    z-index: 5;
+    width: 18%;
+}
+
+#search_box {
+    padding: 5px 10px;
+    height: 1.5em;
+    line-height: 1.5em;
+    border: rgba(225, 225, 225, 0.8) 2px solid;
+    border-radius: 18px;
+}
+
+#search_box:focus {
+    border: #FF9800 2px solid;
 }
 
 #search_box input {
-    width: 100%
+    width: 100%;
+    background: none;
+    border: none;
+    color: #FFF;
+    outline: none;
 }
 
 #search_list {
+    display: none;
+    padding: 5px 10px;
     position: absolute;
-    top: 80%;
-    right: 5%;
-    width: 15%;
+    top: 110%;
+    width: 90%;
     z-index: 5;
     border: #FF9800 solid 2px;
+    border-radius: 15px;
     background-color: rgb(201, 201, 201)
 }
 
@@ -77,13 +95,15 @@ header h1 {
 }
 
 #search_list ul li {
+    padding: 5px;
     color: #000;
+    border-radius: 5px;
+    cursor: pointer
 }
 
 #search_list ul li:hover {
     color: #FFF;
     background-color: #FF9800;
-    cursor: pointer
 }
 
 .main {
