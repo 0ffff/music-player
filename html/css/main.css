@@ -42,11 +42,48 @@ a:hover {
 }
 
 header {
+    position: relative;
     height: 10%;
 }
 
-header h1{
+header h1 {
     padding: 20px;
+}
+
+#search_box {
+    position: absolute;
+    top: 45%;
+    right: 5%;
+    width: 15%;
+    z-index: 3
+}
+
+#search_box input {
+    width: 100%
+}
+
+#search_list {
+    position: absolute;
+    top: 80%;
+    right: 5%;
+    width: 15%;
+    z-index: 5;
+    border: #FF9800 solid 2px;
+    background-color: rgb(201, 201, 201)
+}
+
+#search_list ul {
+    list-style: none;
+}
+
+#search_list ul li {
+    color: #000;
+}
+
+#search_list ul li:hover {
+    color: #FFF;
+    background-color: #FF9800;
+    cursor: pointer
 }
 
 .main {
@@ -173,9 +210,14 @@ header h1{
     height: 80%;
 }
 
+#cur_info {
+    height: 12%;
+    text-align: center
+}
+
 #lrc_box {
     width: 80%;
-    height: 60%;
+    height: 48%;
     text-align: center;
     overflow-y: hidden;
 }
@@ -197,6 +239,7 @@ header h1{
 .player_mid {
     position: relative;
     display: inline-block;
+    margin: 0 2%;
     width: 50%;
 }
 
@@ -242,14 +285,14 @@ volume_progress input {
 }
 
 #loop i, #down i {
-    margin: 20px;
     font-size: 30px;
     vertical-align: middle;
 }
 
 .voice {
     display: inline-block;
-    margin: 20px;
+    margin: 0 2%;
+    width: 10%;
 }
 
 #mute i {
@@ -260,4 +303,9 @@ volume_progress input {
 #volume_progress {
     margin-left: 10px;
     vertical-align: middle;
+    width: 80%;
+}
+#loop, #down {
+    display: inline-block;
+    width: 5%;
 }

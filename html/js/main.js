@@ -1,9 +1,9 @@
-var dom;
 (function () {
-    var play_list = document.getElementById('play_list');//播放列表
+    var playList = document.getElementById('play_list');//播放列表
     var audio = document.getElementById('audio_media');//播放器对象
     var bg = document.getElementById('bg');//背景图片
     var album = document.getElementById('album');//封面图片
+    var curInfo = document.getElementById('cur_info');//当前歌曲信息 
     var lrcBox = document.getElementById('lrc_box');//歌词框
     var back = document.getElementById('back');//上一曲按键
     var play = document.getElementById('play');//开始/暂停按键
@@ -16,8 +16,22 @@ var dom;
     var down = document.getElementById('down');//当前下载按钮
     var mute = document.getElementById('mute');//静音按钮
     var volume = document.getElementById('volume_progress');//音量调节
+    var searchBox = document.getElementById('search_box').firstElementChild;//搜索框
+    var searchList = document.getElementById('search_list');//搜索结果列表
     var curPlayIndex = null,//当前正在播放歌曲的序号
         curPlayList = [];//当前播放列表
+
+    function init() {//初始化
+        getList(60198, function (data) {//获取初始数据
+            curPlayList = data.songs;//把数据存入播放列表
+            for (var i = 0; i < curPlayList.length; i++) {//播放列表渲染DOM
+                playList.appendChild(randerDOM(curPlayList[i]));
+            }
+
+        });
+
+    }
+
 
     function renderSwtichBtn(index) {//渲染所有开始/暂停按键的状态
         for (var i = 0; i < play_list.children.length; i++) {
@@ -57,6 +71,9 @@ var dom;
 
     function curPlayer() {//渲染当前播放器播放状态（包括歌曲信息、歌曲长度、下载按钮地址等）
         album.innerHTML = '<img src="' + curPlayList[curPlayIndex].album.img + '" alt="' + curPlayList[curPlayIndex].album.name + '">';
+        curInfo.innerHTML = '<p>歌曲：' + curPlayList[curPlayIndex].name + '</p>' +
+            '<p>歌手：<a href="javascript:;">' + curPlayList[curPlayIndex].art + '</a></p>' +
+            '<p>专辑：<a href="javascript:;">' + curPlayList[curPlayIndex].album.name + '</a></p>';
         getLrc(curPlayList[curPlayIndex].id, function (res) {
             lrcScroll(res.data.lrc.lyric);
         });
@@ -77,102 +94,111 @@ var dom;
         }
     }, 500)
 
-    dom = function () {//根据歌单渲染dom
-        for (var i = 0; i < list.songs.length; i++) {
-            curPlayList.push(list.songs[i]);
-            var item = document.createElement('li');
-            item.innerHTML =
-                // '<input type="checkbox" class="songlist_checkbox">' +
-                // '<div class="songlist_number">' + (i + 1) + '</div>' +
-                '<div class="songlist_songname" title=" ' + curPlayList[i].name + ' "> ' + curPlayList[i].name + ' </div>' +
-                '<div class="mod_list_menu">' +
-                '<a href="javascript:;" class="list_menu_item switch" title="开始/暂停">' +
-                '<i class="iconfont icon-iconfontplay2"></i></a>' +
-                '<a href="' + curPlayList[i].mp3 + '" class="list_menu_item" title="下载"  download="' + curPlayList[i].name + '">' +
-                '<i class="iconfont icon-download"></i></a>' +
-                '</div>' +
-                '<div class="songlist_artist">' +
-                '<a href="#" id="singer_name"> ' + curPlayList[i].art + ' </a>' +
-                '</div>' +
-                '<div class="songlist_time"> ' + fix(Math.round(curPlayList[i].time / 60000), 2) + ':' + fix(Math.round(curPlayList[i].time / 1000 % 60), 2) + ' </div>' +
-                '<a href="javascript:;" class="songlist_delete" title="删除">' +
-                '<i class="iconfont icon-del"></i>' +
-                '</a>';
-            play_list.appendChild(item);//将歌单中的歌曲按照模板插入dom树
-            for (var j = 0; j < play_list.children[i].children.length; j++) {
-                if (play_list.children[i].children[j].className.indexOf('mod_list_menu') !== -1) {
-                    play_list.children[i].children[j].children[0].addEventListener('click', function (i, j) {//给歌单中的每一首歌上的按钮绑定事件
-                        return function () {//按钮绑定开始/暂停事件
-                            if (!audio.paused) {
-                                if (curPlayIndex === playListIndex(list.songs[i].id)) {
-                                    audio.pause();
-                                    renderSwtichBtn(curPlayIndex);
-                                }
-                                else {
-                                    curPlayIndex = playListIndex(list.songs[i].id);
-                                    curPlayer();
-                                    audio.play();
-                                    renderSwtichBtn(curPlayIndex);
-                                }
+    function randerDOM(song) {//根据歌曲数据渲染DOM
+        var node = document.createElement('li');
+        node.innerHTML =
+            '<div class="songlist_songname" title=" ' + song.name + ' "> ' + song.name + ' </div>' +
+            '<div class="mod_list_menu">' +
+            '<a href="javascript:;" class="list_menu_item switch" title="开始/暂停">' +
+            '<i class="iconfont icon-iconfontplay2"></i></a>' +
+            '<a href="' + song.mp3 + '" class="list_menu_item" title="下载"  download="' + song.name + '">' +
+            '<i class="iconfont icon-download"></i></a>' +
+            '</div>' +
+            '<div class="songlist_artist">' +
+            '<a href="javascript:;" id="singer_name"> ' + song.art + ' </a>' +
+            '</div>' +
+            '<div class="songlist_time"> ' + fix(Math.round(song.time / 60000), 2) + ':' + fix(Math.round(song.time / 1000 % 60), 2) + ' </div>' +
+            '<a href="javascript:;" class="songlist_delete" title="删除">' +
+            '<i class="iconfont icon-del"></i>' +
+            '</a>';
+
+        for (var i = 0; i < node.children.length; i++) {
+            if (node.children[i].className.indexOf('mod_list_menu') !== -1) {
+                node.children[i].children[0].addEventListener('click', function (id) {//给歌单中的每一首歌上的按钮绑定事件
+                    return function () {//按钮绑定开始/暂停事件
+                        if (!audio.paused) {
+                            if (curPlayIndex === playListIndex(id)) {
+                                audio.pause();
+                                renderSwtichBtn(curPlayIndex);
                             }
                             else {
-                                if (curPlayIndex !== playListIndex(list.songs[i].id)) {
-                                    curPlayIndex = playListIndex(list.songs[i].id);
-                                    curPlayer();
-                                }
+                                curPlayIndex = playListIndex(id);
+                                curPlayer();
                                 audio.play();
                                 renderSwtichBtn(curPlayIndex);
                             }
-
                         }
-                    }(i, j))
-                }
-                if (play_list.children[i].children[j].className.indexOf('songlist_songname') !== -1) {
-                    play_list.children[i].children[j].addEventListener('dblclick', function (i, j) {//给歌单中的每一首歌上的歌曲名字绑定事件
-                        return function () {//歌名绑定双击开始/暂停事件
-                            if (!audio.paused) {
-                                if (curPlayIndex === playListIndex(list.songs[i].id)) {
-                                    audio.pause();
-                                    renderSwtichBtn(curPlayIndex);
-                                }
-                                else {
-                                    curPlayIndex = playListIndex(list.songs[i].id);
-                                    curPlayer();
-                                    audio.play();
-                                    renderSwtichBtn(curPlayIndex);
-                                }
+                        else {
+                            if (curPlayIndex !== playListIndex(id)) {
+                                curPlayIndex = playListIndex(id);
+                                curPlayer();
+                            }
+                            audio.play();
+                            renderSwtichBtn(curPlayIndex);
+                        }
+
+                    }
+                }(song.id))
+            }
+            if (node.children[i].className.indexOf('songlist_songname') !== -1) {
+                node.children[i].addEventListener('dblclick', function (id) {//给歌单中的每一首歌上的歌曲名字绑定事件
+                    return function () {//歌名绑定双击开始/暂停事件
+                        if (!audio.paused) {
+                            if (curPlayIndex === playListIndex(id)) {
+                                audio.pause();
+                                renderSwtichBtn(curPlayIndex);
                             }
                             else {
-                                if (curPlayIndex !== playListIndex(list.songs[i].id)) {
-                                    curPlayIndex = playListIndex(list.songs[i].id);
-                                    curPlayer();
-                                }
+                                curPlayIndex = playListIndex(id);
+                                curPlayer();
                                 audio.play();
                                 renderSwtichBtn(curPlayIndex);
                             }
-
                         }
-                    }(i, j))
-                }
-                if (play_list.children[i].children[j].className.indexOf('songlist_delete') !== -1) {
-                    var removed = play_list.children[i];
-                    removed.children[j].addEventListener('click', function (removed, i) {//绑定删除事件
-                        return function () {
-                            if (curPlayIndex < i) {
-                                curPlayIndex--;
+                        else {
+                            if (curPlayIndex !== playListIndex(id)) {
+                                curPlayIndex = playListIndex(id);
+                                curPlayer();
                             }
-                            curPlayList.splice(playListIndex(list.songs[i].id), 1);
-                            play_list.removeChild(removed);
-                            if (i === curPlayIndex) {
-                                audio.src = curPlayList[0].mp3;
+                            audio.play();
+                            renderSwtichBtn(curPlayIndex);
+                        }
+
+                    }
+                }(song.id))
+            }
+            if (node.children[i].className.indexOf('songlist_delete') !== -1) {
+                var removed = node;
+                node.children[i].addEventListener('click', function (id, removed) {//绑定删除事件
+                    return function () {
+                        if (curPlayIndex || curPlayIndex < playListIndex(id)) {
+                            curPlayIndex--;
+                        }
+                        if (playListIndex(id) == curPlayIndex) {
+                            var flag = audio.paused;
+                            curPlayList.splice(playListIndex(id), 1);
+                            curPlayer();
+                            if (!flag) {
+                                audio.play();
+                            }
+                            else {
                                 audio.pause();
                             }
+                            renderSwtichBtn(curPlayIndex);
                         }
-                    }(removed, i))
-                }
+                        else {
+                            curPlayList.splice(playListIndex(id), 1);
+                        }
+                        playList.removeChild(node);
+                    }
+                }(song.id, removed))
             }
         }
+        return node;
+
     }
+
+    init();//运行初始化
 
     window.onload = function () {//为功能按钮绑定事件
         play.addEventListener('click', function () {//开始/暂停
@@ -288,6 +314,25 @@ var dom;
                 mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
             }
             audio.volume = volume.value / 100;
+        })
+        searchBox.addEventListener('change', function () {
+            search(searchBox.value, 1, function (res) {
+                var ul = document.createElement('ul');
+                for (var i = 0; i < res.data.result.songs.length; i++) {//把搜索结果插入DOM
+                    var item = document.createElement('li');
+                    item.innerHTML = res.data.result.songs[i].name + ' - ' + res.data.result.songs[i].artists[0].name;
+                    item.addEventListener('click', function (data) {//点击插入播放列表
+                        return function () {
+                            curPlayList.push(data);
+                            playList.appendChild(randerDOM(data));
+                            searchList.innerHTML = '';
+                            searchBox.value = '';
+                        }
+                    }(res.data.result.songs[i]))
+                    ul.appendChild(item);
+                }
+                searchList.appendChild(ul);
+            })
         })
     }
 })()
