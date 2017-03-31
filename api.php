@@ -3,45 +3,40 @@
 
         //判断请求目的
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
-        if($get->type == "list"){
+        if($_GET["type"] == "list"){
             getList();
         }
-        elseif($get->type == "lrc"){
+        elseif($_GET["type"] == "lrc"){
             getLrc();
         }
-        elseif($get->type == "search"){
+        elseif($_GET["type"] == "search"){
             search();
         }
     }
 
     function getList(){
-        $id=$get->id;
+        $id=$_GET["id"];
         $url='music.163.com/api/playlist/detail?id='.$id;
         $res=HttpGet($url);
-        each $res;
+        echo $res;
     }
 
     function getLrc(){
-        $id=$get->id;
+        $id=$_GET["id"];
         $url='music.163.com/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id='.$id;
         $res=HttpGet($url);
-        each $res;
+        echo $res;
     }
 
     function search(){
-        $s=$get->s;
-        $param={
-            "s":$s,
-            "offset":0,
-            "limit":10,
-            "type":1
-        }
-        $url='music.163.com/api/search/pc';
-        $res=HttpPost($url,$param);
-        each $res;
+        $s=$_GET["s"];
+        $s=rawurlencode($s);
+        $url='music.163.com/api/search/pc?offset=0&limit=10&type=1&s='.$s;
+        $res=HttpPost($url);
+        echo $res;
     }
     
-    public function HttpGet($url){
+    function HttpGet($url){
         $curl = curl_init ();
         curl_setopt ( $curl, CURLOPT_URL, $url );
         curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, true );
@@ -57,16 +52,16 @@
         return $res;
     }
 
-     public function HttpPost($url,$param){
+     function HttpPost($url){
 
         $ch = curl_init();
         //如果$param是数组的话直接用
         curl_setopt($ch, CURLOPT_URL, $url);
         //如果$param是json格式的数据，则打开下面这个注释
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($param))
-        );
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        //         'Content-Type: application/json',
+        //         'Content-Length: ' . strlen($param))
+        // );
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
