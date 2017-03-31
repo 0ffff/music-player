@@ -186,7 +186,7 @@ header h1 {
     display: inline-block;
     width: 10px;
     height: 10px;
-    background: url('/image/wave2.gif') 0 0 no-repeat;
+    background: url('//raw.githubusercontent.com/lx3133584/music-player/master/html/image/wave2.gif') 0 0 no-repeat;
 }
 
 #play_list li {
