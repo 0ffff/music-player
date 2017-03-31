@@ -19,7 +19,7 @@ app.get('/lrc', function (req, res) {
 app.get('/search', function (req, res) {
     let s = encodeURI(req.query.s);
     s = s.replace(/ /g,"%20");
-    download('/api/search/pc?s=' + s + '&offset=0&limit=10&type=' + req.query.type, 'POST', function(data){
+    download('/api/search/pc?s=' + s + '&offset=0&limit=10&type=1', 'POST', function(data){
         res.send(JSON.stringify(data));
     });
 })

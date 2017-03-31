@@ -330,7 +330,7 @@
         searchBox.addEventListener('keyup', function () {//搜索
             searchList.innerHTML = '';
             searchList.style.display = 'none';
-            search(searchBox.value, 1, function (data) {
+            search(searchBox.value, function (data) {
                 var ul = document.createElement('ul');
                 for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
                     var item = document.createElement('li');
@@ -355,7 +355,7 @@
         })
         searchBox.addEventListener('focus', function () {//搜索
             searchBox.parentElement.style.borderColor = '#ff9800';
-            search(searchBox.value, 1, function (data) {
+            search(searchBox.value, function (data) {
                 var ul = document.createElement('ul');
                 for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
                     var item = document.createElement('li');

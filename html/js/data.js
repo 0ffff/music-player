@@ -4,9 +4,10 @@ var getList,
 (function () {
     //获取歌单
     getList = function (ListId, callBack) {
-        axios.get('/list', {//获取歌单
+        axios.get('api.php', {//获取歌单
             params: {
-                id: ListId
+                id: ListId,
+                type: 'list'
             }
         })
             .then(function (res) {
@@ -39,9 +40,10 @@ var getList,
 
     //获取歌词
     getLrc = function (songId, callBack) {
-        axios.get('/lrc', {
+        axios.get('api.php', {
             params: {
-                id: songId
+                id: songId,
+                type: 'lrc'
             }
         })
             .then(callBack)
@@ -51,11 +53,11 @@ var getList,
 
     }
     //搜索
-    search = function (key, type, callBack) {
-        axios.get('/search', {
+    search = function (key, callBack) {
+        axios.get('api.php', {
             params: {
                 s: key,
-                type: type
+                type: 'search'
             }
         })
             .then(function (res) {
