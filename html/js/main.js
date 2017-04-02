@@ -320,8 +320,8 @@
         })
     }
 
-    function toggleMuteIcon() {//切换静音图标
-        if (volume.value == 0) {//如果音量为0则切换静音标志
+    function toggleMuteIcon(value) {//切换静音图标
+        if (value == 0) {//如果音量为0则切换静音标志
             audio.muted = true;
             mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
         }
@@ -373,7 +373,7 @@
             audio.currentTime = progress.value;
         })
         volume.addEventListener('change', function () {//拖动音量进度条
-            toggleMuteIcon();
+            toggleMuteIcon(volume.value);
             audio.volume = volume.value / 100;
         })
         searchBox.addEventListener('keyup', function () {//搜索
@@ -421,10 +421,10 @@
                     e.altKey && mNext();
                     break;
                 case 38:
-                    e.altKey && (audio.volume = audio.volume + 0.1) && (volume.value = audio.volume * 100) && toggleMuteIcon();
+                    e.altKey && (audio.volume = audio.volume + 0.1) && (volume.value = audio.volume * 100) && toggleMuteIcon(audio.volume);
                     break;
                 case 40:
-                    e.altKey && (audio.volume = audio.volume - 0.1) && (volume.value = audio.volume * 100) && toggleMuteIcon();
+                    e.altKey && (audio.volume = audio.volume - 0.1) && (volume.value = audio.volume * 100) && toggleMuteIcon(audio.volume);
                     break;
                 case 67:
                     e.altKey && mLoop();
