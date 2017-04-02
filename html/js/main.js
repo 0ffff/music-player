@@ -320,6 +320,17 @@
         })
     }
 
+    function toggleMuteIcon() {//切换静音图标
+        if (volume.value == 0) {//如果音量为0则切换静音标志
+            audio.muted = true;
+            mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
+        }
+        else {
+            audio.muted = false;
+            mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
+        }
+    }
+
     init();//运行初始化
 
     window.onload = function () {//为功能按钮绑定事件
@@ -362,14 +373,7 @@
             audio.currentTime = progress.value;
         })
         volume.addEventListener('change', function () {//拖动音量进度条
-            if (volume.value == 0) {//如果音量为0则切换静音标志
-                audio.muted = true;
-                mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
-            }
-            else {
-                audio.muted = false;
-                mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
-            }
+            toggleMuteIcon();
             audio.volume = volume.value / 100;
         })
         searchBox.addEventListener('keyup', function () {//搜索
@@ -417,10 +421,10 @@
                     e.altKey && mNext();
                     break;
                 case 38:
-                    e.altKey && (audio.volume = audio.volume + 0.1);
+                    e.altKey && (audio.volume = audio.volume + 0.1) && (volume.value = audio.volume * 100) && toggleMuteIcon();
                     break;
                 case 40:
-                    e.altKey && (audio.volume = audio.volume - 0.1);
+                    e.altKey && (audio.volume = audio.volume - 0.1) && (volume.value = audio.volume * 100) && toggleMuteIcon();
                     break;
                 case 67:
                     e.altKey && mLoop();
