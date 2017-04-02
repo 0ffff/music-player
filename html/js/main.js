@@ -5,9 +5,9 @@
     var album = document.getElementById('album');//封面图片
     var curInfo = document.getElementById('cur_info');//当前歌曲信息 
     var lrcBox = document.getElementById('lrc_box');//歌词框
-    var back = document.getElementById('back');//上一曲按键
+    var prev = document.getElementById('prev');//上一曲按键
     var play = document.getElementById('play');//开始/暂停按键
-    var last = document.getElementById('last');//下一曲按键
+    var next = document.getElementById('next');//下一曲按键
     var info = document.getElementById('player_music_info');//当前播放的歌曲信息
     var time = document.getElementById('player_music_time');//当前播放的歌曲时长
     var progress = document.getElementById('player_progress').firstElementChild;//歌曲进度条
@@ -210,88 +210,133 @@
 
     }
 
+    function mPlay() {//开始/暂停
+        if (!audio.src) {
+            curPlayIndex = 0;
+            curPlayer();
+        }
+        if (audio.paused) {
+            audio.play();
+        }
+        else {
+            audio.pause();
+        }
+        renderSwtichBtn(curPlayIndex);
+    }
+
+    function mPrev() {//上一曲
+        var flag = audio.paused;
+        if (curPlayIndex === 0) {
+            curPlayIndex = curPlayList.length - 1;
+        }
+        else {
+            curPlayIndex--;
+        }
+        curPlayer();
+        if (!flag) {
+            audio.play();
+        }
+        else {
+            audio.pause();
+        }
+        renderSwtichBtn(curPlayIndex);
+    }
+
+    function mNext() {//下一曲
+        var flag = audio.paused;
+        if (loopType === 'list' || loopType === 'loop') {//根据循环类型标志确定循环方式
+            audio.loop = false;
+            if (curPlayIndex === curPlayList.length - 1) {
+                curPlayIndex = 0;
+            }
+            else {
+                curPlayIndex++;
+            }
+        }
+        else if (loopType === 'random') {
+            audio.loop = false;
+            curPlayIndex = Math.floor(Math.random() * curPlayList.length);
+        }
+        curPlayer();
+        if (!flag) {
+            audio.play();
+        }
+        else {
+            audio.pause();
+        }
+        renderSwtichBtn(curPlayIndex);
+    }
+
+    function mLoop() {//循环类型
+        if (loopType === 'list') {
+            loopType = 'random';
+            loop.innerHTML = '<i class="iconfont icon-random"></i>';
+        }
+        else if (loopType === 'random') {
+            loopType = 'loop';
+            loop.innerHTML = '<i class="iconfont icon-single1"></i>';
+        }
+        else if (loopType === 'loop') {
+            loopType = 'list';
+            loop.innerHTML = '<i class="iconfont icon-single"></i>';
+        }
+    }
+
+    function mMute() {//静音
+        if (audio.muted) {
+            mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
+            volume.value = 100;
+        }
+        else {
+            mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
+            volume.value = 0;
+        }
+        audio.volume = volume.value / 100
+        audio.muted = !audio.muted;
+    }
+
+    function mSearch() {//搜索
+        search(searchBox.value, function (data) {
+            var ul = document.createElement('ul');
+            for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
+                var item = document.createElement('li');
+                item.innerHTML = data[i].name + ' - ' + data[i].art;
+                item.addEventListener('click', function (data) {//点击插入播放列表
+                    return function () {
+                        curPlayList.push(data);
+                        playList.appendChild(randerDOM(data));
+                        localStorage.data = JSON.stringify(curPlayList);
+                        searchList.innerHTML = '';
+                        searchList.style.display = 'none';
+                        searchBox.value = '';
+                    }
+                }(data[i]))
+                searchList.innerHTML = '';
+                searchList.style.display = 'none';
+                ul.appendChild(item);
+                searchList.style.display = 'block';
+            }
+            searchList.appendChild(ul);
+        })
+    }
+
     init();//运行初始化
 
     window.onload = function () {//为功能按钮绑定事件
-        play.addEventListener('click', function () {//开始/暂停
-            if (!audio.src) {
-                curPlayIndex = 0;
-                curPlayer();
-            }
-            if (audio.paused) {
-                audio.play();
-            }
-            else {
-                audio.pause();
-            }
-            renderSwtichBtn(curPlayIndex);
+        play.addEventListener('click', function () {
+            mPlay();
         })
-        back.addEventListener('click', function () {//上一曲
-            var flag = audio.paused;
-            if (curPlayIndex === 0) {
-                curPlayIndex = curPlayList.length - 1;
-            }
-            else {
-                curPlayIndex--;
-            }
-            curPlayer();
-            if (!flag) {
-                audio.play();
-            }
-            else {
-                audio.pause();
-            }
-            renderSwtichBtn(curPlayIndex);
+        prev.addEventListener('click', function () {
+            mPrev();
         })
-        last.addEventListener('click', function () {//下一曲
-            var flag = audio.paused;
-            if (loopType === 'list' || loopType === 'loop') {//根据循环类型标志确定循环方式
-                audio.loop = false;
-                if (curPlayIndex === curPlayList.length - 1) {
-                    curPlayIndex = 0;
-                }
-                else {
-                    curPlayIndex++;
-                }
-            }
-            else if (loopType === 'random') {
-                audio.loop = false;
-                curPlayIndex = Math.floor(Math.random() * curPlayList.length);
-            }
-            curPlayer();
-            if (!flag) {
-                audio.play();
-            }
-            else {
-                audio.pause();
-            }
-            renderSwtichBtn(curPlayIndex);
+        next.addEventListener('click', function () {
+            mNext();
         })
-        loop.addEventListener('click', function () {//循环类型
-            if (loopType === 'list') {
-                loopType = 'random';
-                loop.innerHTML = '<i class="iconfont icon-random"></i>';
-            }
-            else if (loopType === 'random') {
-                loopType = 'loop';
-                loop.innerHTML = '<i class="iconfont icon-single1"></i>';
-            }
-            else if (loopType === 'loop') {
-                loopType = 'list';
-                loop.innerHTML = '<i class="iconfont icon-single"></i>';
-            }
+        loop.addEventListener('click', function () {
+            mLoop();
         })
-        mute.addEventListener('click', function () {//静音
-            if (audio.muted) {
-                mute.innerHTML = '<i class="iconfont icon-playervolumeup"></i>';
-                volume.value = 100;
-            }
-            else {
-                mute.innerHTML = '<i class="iconfont icon-player-volume-off-copy"></i>';
-                volume.value = 0;
-            }
-            audio.volume = volume.value / 100
-            audio.muted = !audio.muted;
+        mute.addEventListener('click', function () {
+            mMute();
         })
         audio.addEventListener('ended', function () {//切换下一曲的方式
             if (loopType === 'list') {//根据循环类型标志确定循环方式
@@ -330,53 +375,12 @@
         searchBox.addEventListener('keyup', function () {//搜索
             searchList.innerHTML = '';
             searchList.style.display = 'none';
-            search(searchBox.value, function (data) {
-                var ul = document.createElement('ul');
-                for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
-                    var item = document.createElement('li');
-                    item.innerHTML = data[i].name + ' - ' + data[i].art;
-                    item.addEventListener('click', function (data) {//点击插入播放列表
-                        return function () {
-                            curPlayList.push(data);
-                            playList.appendChild(randerDOM(data));
-                            localStorage.data = JSON.stringify(curPlayList);
-                            searchList.innerHTML = '';
-                            searchList.style.display = 'none';
-                            searchBox.value = '';
-                        }
-                    }(data[i]))
-                    searchList.innerHTML = '';
-                    searchList.style.display = 'none';
-                    ul.appendChild(item);
-                    searchList.style.display = 'block';
-                }
-                searchList.appendChild(ul);
-            })
+            mSearch();
+
         })
         searchBox.addEventListener('focus', function () {//搜索
             searchBox.parentElement.style.borderColor = '#ff9800';
-            search(searchBox.value, function (data) {
-                var ul = document.createElement('ul');
-                for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
-                    var item = document.createElement('li');
-                    item.innerHTML = data[i].name + ' - ' + data[i].art;
-                    item.addEventListener('click', function (data) {//点击插入播放列表
-                        return function () {
-                            curPlayList.push(data);
-                            playList.appendChild(randerDOM(data));
-                            localStorage.data = JSON.stringify(curPlayList);
-                            searchList.innerHTML = '';
-                            searchList.style.display = 'none';
-                            searchBox.value = '';
-                        }
-                    }(data[i]))
-                    searchList.innerHTML = '';
-                    searchList.style.display = 'none';
-                    ul.appendChild(item);
-                    searchList.style.display = 'block';
-                }
-                searchList.appendChild(ul);
-            })
+            mSearch();
         })
         searchBox.addEventListener('blur', function () {//搜索框失焦边框颜色复位
             searchBox.parentElement.style.borderColor = 'rgba(225, 225, 225, 0.8)';
@@ -398,6 +402,31 @@
                 }
                 searchList.innerHTML = '';
                 searchList.style.display = 'none';
+            }
+        })
+        document.addEventListener('keydown', function (e) {
+            switch (e.keyCode) {
+                case 32:
+                case 19:
+                    mPlay();
+                    break;
+                case 37:
+                    e.altKey && mBack();
+                    break;
+                case 39:
+                    e.altKey && mNext();
+                    break;
+                case 38:
+                    e.altKey && (audio.volume = audio.volume + 0.1);
+                    break;
+                case 40:
+                    e.altKey && (audio.volume = audio.volume - 0.1);
+                    break;
+                case 67:
+                    e.altKey && mLoop();
+                    break;
+                case 68:
+                    e.altKey && document.getElementById('down').click();
             }
         })
     }

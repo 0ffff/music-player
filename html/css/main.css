@@ -342,7 +342,7 @@ volume_progress input {
     width: 100%;
 }
 
-#back i,  #last i {
+#prev i,  #next i {
     margin: 20px;
     font-size: 36px;
     vertical-align: middle;
