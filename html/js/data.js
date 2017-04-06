@@ -1,7 +1,7 @@
 var getData = (function () {
     //获取歌单
     function getList(ListId, callBack) {
-        axios.get('../api.php', {//获取歌单
+        axios.get('./api.php', {//获取歌单
             params: {
                 id: ListId,
                 type: 'list'
@@ -37,7 +37,7 @@ var getData = (function () {
 
     //获取歌词
     function getLrc(songId, callBack) {
-        axios.get('../api.php', {
+        axios.get('./api.php', {
             params: {
                 id: songId,
                 type: 'lrc'
@@ -51,7 +51,7 @@ var getData = (function () {
     }
     //搜索
     function search(key, callBack) {
-        axios.get('../api.php', {
+        axios.get('./api.php', {
             params: {
                 s: key,
                 type: 'search'
