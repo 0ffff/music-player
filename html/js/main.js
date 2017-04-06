@@ -31,7 +31,7 @@
         else {
             getData.list(60198, function (data) {//获取初始数据
                 curPlayList = data.songs;//把数据存入播放列表
-                for (var i = 0; i < curPlayList.length; i++) {//播放列表渲染DOM
+                for (var i = 0; i < 10; i++) {//播放列表渲染DOM
                     playList.appendChild(randerDOM(curPlayList[i]));
                 }
             });
