@@ -29,7 +29,7 @@
             }
         }
         else {
-            getList(60198, function (data) {//获取初始数据
+            getData.list(60198, function (data) {//获取初始数据
                 curPlayList = data.songs;//把数据存入播放列表
                 for (var i = 0; i < curPlayList.length; i++) {//播放列表渲染DOM
                     playList.appendChild(randerDOM(curPlayList[i]));
@@ -79,7 +79,7 @@
         curInfo.innerHTML = '<p>歌曲：' + curPlayList[curPlayIndex].name + '</p>' +
             '<p>歌手：<a href="javascript:;">' + curPlayList[curPlayIndex].art + '</a></p>' +
             '<p>专辑：<a href="javascript:;">' + curPlayList[curPlayIndex].album.name + '</a></p>';
-        getLrc(curPlayList[curPlayIndex].id, function (res) {
+        getData.lrc(curPlayList[curPlayIndex].id, function (res) {
             lrcScroll(res.data.lrc.lyric);
         });
         info.innerHTML = curPlayList[curPlayIndex].name + ' - ' + curPlayList[curPlayIndex].art;

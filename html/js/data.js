@@ -1,10 +1,7 @@
-var getList,
-    getLrc,
-    search;
-(function () {
+var getData = (function () {
     //获取歌单
-    getList = function (ListId, callBack) {
-        axios.get('api.php', {//获取歌单
+    function getList(ListId, callBack) {
+        axios.get('../api.php', {//获取歌单
             params: {
                 id: ListId,
                 type: 'list'
@@ -39,8 +36,8 @@ var getList,
 
 
     //获取歌词
-    getLrc = function (songId, callBack) {
-        axios.get('api.php', {
+    function getLrc(songId, callBack) {
+        axios.get('../api.php', {
             params: {
                 id: songId,
                 type: 'lrc'
@@ -53,8 +50,8 @@ var getList,
 
     }
     //搜索
-    search = function (key, callBack) {
-        axios.get('api.php', {
+    function search(key, callBack) {
+        axios.get('../api.php', {
             params: {
                 s: key,
                 type: 'search'
@@ -81,5 +78,10 @@ var getList,
             .catch(function (error) {
                 console.log(error);
             });
+    }
+    return {
+        list: getList,
+        lrc: getLrc,
+        search: search
     }
 }())

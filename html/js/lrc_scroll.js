@@ -1,8 +1,7 @@
-var lrcScroll;
-(function () {
+var lrcScroll = (function () {
     var audio = document.getElementById('audio_media');//播放器对象
     var lrcBox = document.getElementById('lrc_box');//歌词框
-    lrcScroll = function (lrc) {
+    return function (lrc) {
         //处理数据
         var lrcArray = lrc.split('\n');
         var dataObj = {},
