@@ -296,7 +296,7 @@
     }
 
     function mSearch() {//搜索
-        search(searchBox.value, function (data) {
+        getData.search(searchBox.value, function (data) {
             var ul = document.createElement('ul');
             for (var i = 0; i < data.length; i++) {//把搜索结果插入DOM
                 var item = document.createElement('li');
