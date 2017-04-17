@@ -1,24 +1,24 @@
 (function () {
-    var playList = document.getElementById('play_list');//播放列表
-    var audio = document.getElementById('audio_media');//播放器对象
-    var bg = document.getElementById('bg');//背景图片
-    var album = document.getElementById('album');//封面图片
-    var curInfo = document.getElementById('cur_info');//当前歌曲信息 
-    var lrcBox = document.getElementById('lrc_box');//歌词框
-    var prev = document.getElementById('prev');//上一曲按键
-    var play = document.getElementById('play');//开始/暂停按键
-    var next = document.getElementById('next');//下一曲按键
-    var info = document.getElementById('player_music_info');//当前播放的歌曲信息
-    var time = document.getElementById('player_music_time');//当前播放的歌曲时长
-    var progress = document.getElementById('player_progress').firstElementChild;//歌曲进度条
-    var loop = document.getElementById('loop');//循环类型按键
-    var loopType = 'list';//循环类型标志
-    var down = document.getElementById('down');//当前下载按钮
-    var mute = document.getElementById('mute');//静音按钮
-    var volume = document.getElementById('volume_progress');//音量调节
-    var searchBox = document.getElementById('search_box').firstElementChild;//搜索栏
-    var searchList = document.getElementById('search_list');//搜索结果列表
-    var curPlayIndex = null,//当前正在播放歌曲的序号
+    var playList = document.getElementById('play_list'),//播放列表
+        audio = document.getElementById('audio_media'),//播放器对象
+        bg = document.getElementById('bg'),//背景图片
+        album = document.getElementById('album'),//封面图片
+        curInfo = document.getElementById('cur_info'),//当前歌曲信息 
+        lrcBox = document.getElementById('lrc_box'),//歌词框
+        prev = document.getElementById('prev'),//上一曲按键
+        play = document.getElementById('play'),//开始/暂停按键
+        next = document.getElementById('next'),//下一曲按键
+        info = document.getElementById('player_music_info'),//当前播放的歌曲信息
+        time = document.getElementById('player_music_time'),//当前播放的歌曲时长
+        progress = document.getElementById('player_progress').firstElementChild,//歌曲进度条
+        loop = document.getElementById('loop'),//循环类型按键
+        loopType = 'list',//循环类型标志
+        down = document.getElementById('down'),//当前下载按钮
+        mute = document.getElementById('mute'),//静音按钮
+        volume = document.getElementById('volume_progress'),//音量调节
+        searchBox = document.getElementById('search_box').firstElementChild,//搜索栏
+        searchList = document.getElementById('search_list'),//搜索结果列表
+        curPlayIndex = null,//当前正在播放歌曲的序号
         curPlayList = [];//当前播放列表
 
     function init() {//初始化

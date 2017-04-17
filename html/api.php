@@ -64,7 +64,7 @@
         // );
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //如果用的协议是https则打开鞋面这个注释

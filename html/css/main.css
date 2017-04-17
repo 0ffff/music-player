@@ -12,7 +12,12 @@ html,body {
     line-height: 1.5;
     font-family: poppin,'PingFang SC',Tahoma,Arial,\5FAE\8F6F\96C5\9ED1,sans-serif;
     font-family: Tahoma,Arial,\5FAE\8F6F\96C5\9ED1,sans-serif/9;
-    background-color: rgb(41, 41, 41)
+    background-color: rgb(41, 41, 41);
+    -moz-user-select: none; /*火狐*/
+    -webkit-user-select: none; /*webkit浏览器*/
+    -ms-user-select: none; /*IE10*/
+    -khtml-user-select: none; /*早期浏览器*/
+    user-select: none;
 }
 
 a {
