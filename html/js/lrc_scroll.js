@@ -82,7 +82,6 @@ var lrcScroll;
         }, 50)
 
         //歌词拖动
-        
         lrcBox.addEventListener('mousedown',function(e) {
             startY = e.screenY;
             flag = true;
