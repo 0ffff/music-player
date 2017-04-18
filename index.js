@@ -8,13 +8,13 @@ app.get('/list', function (req, res) {
     download('/api/playlist/detail?id=' + req.query.id, 'GET', function(data){
         res.send(JSON.stringify(data));
     });
-})
+});
 
 app.get('/lrc', function (req, res) {
     download('/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id=' + req.query.id, 'GET', function(data){
         res.send(JSON.stringify(data));
     });
-})
+});
 
 app.get('/search', function (req, res) {
     let s = encodeURI(req.query.s);
@@ -22,7 +22,7 @@ app.get('/search', function (req, res) {
     download('/api/search/pc?s=' + s + '&offset=0&limit=10&type=1', 'POST', function(data){
         res.send(JSON.stringify(data));
     });
-})
+});
 
 var server = app.listen(3000);
 console.log('Listening on port 3000...');
@@ -37,7 +37,7 @@ function download(url, method, callBack) {
         headers: {
             //这里放期望发送出去的请求头
         }
-    }
+    };
     var req = http.request(opt, function (res) {
         const statusCode = res.statusCode;
         const contentType = res.headers['content-type'];
